@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ATMSRPOCP
 {
-    public class ATM
+    /*public class ATM
     {
 
         public double money { get; set; }
@@ -57,5 +57,80 @@ namespace ATMSRPOCP
         {
             ev.Invoke(value);
         }
+    }*/
+    public interface ATM
+    {
+        double money { get; set; }
+        string numbercard { get; set; }
+        string nameperson { get; set; }
+        string number { get; set; }
+    }
+
+    public interface CreateCard
+    {
+        ATM CreateCard();
+        void ShowCard(ATM card);
+    }
+
+    public interface ATMEv
+    {
+        void CardEv(int value);
+    }
+
+    public class CardEventHandler : ATMEv
+    {
+        public void CardEv(int value)
+        {
+            Console.WriteLine($"Событие с параметром {value} было вызвано");
+        }
+    }
+
+    public class CardService : CreateCard
+    {
+        public ATMEv card1;
+
+        public CardService(ATMEv card1)
+        {
+            this.card1 = card1;
+        }
+
+        public ATM CreateCard()
+        {
+            Console.Write("\nВведите желаемый номер карты:");
+            string numbercard = Console.ReadLine();
+            Console.Write("\nВведите имя:");
+            string nameperson = Console.ReadLine();
+            Console.Write("\nВведите номер телефона:");
+            string number = Console.ReadLine();
+            Console.Write("\nВведите сумму(гривны)");
+            double money = Convert.ToDouble(Console.ReadLine());
+            ATM card = new Card { money = money, numbercard = numbercard, nameperson = nameperson, number = number };
+            int value = 42;
+            card1.CardEv(value);
+            return card;
+        }
+
+        public void ShowCard(ATM card)
+        {
+            Console.Write($"\nНомер карты:{card.numbercard}\nИмя владельца:{card.nameperson}\nНомер телефона:{card.number}\nСумма (гривны):{card.money}");
+        }
+    }
+
+    public class Card : ATM
+    {
+        public double money { get; set; }
+        public string numbercard { get; set; }
+        public string nameperson { get; set; }
+        public string number { get; set; }
+    }
+    public delegate void CardDelegateVoid(int value);
+    public class SourceEventInt
+    {
+        public CardDelegateVoid ev;
+        public void GenerateEvent(int value)
+        {
+            ev.Invoke(value);
+        }
     }
 }
+
